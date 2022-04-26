@@ -6,10 +6,12 @@ import styles from "../styles/Home.module.css";
 import Card from "../components/Card";
 import { Grid } from "@mui/material";
 import { getSession } from "next-auth/react";
+import axios from "axios";
 
 export default function Home() {
   const Router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     const securePage = async () => {
@@ -18,6 +20,10 @@ export default function Home() {
       }
     };
     securePage();
+    axios.get("/api/posts/getAll").then(({ data }) => {
+      setPosts(data);
+      console.log(data);
+    });
   }, []);
   return (
     <div>
@@ -44,12 +50,15 @@ export default function Home() {
           marginTop: "100px",
         }}
       >
+        {/* <Card />
         <Card />
         <Card />
         <Card />
         <Card />
-        <Card />
-        <Card />
+        <Card /> */}
+        {posts.map((card) => (
+          <Card {...card} />
+        ))}
       </Grid>
       {/* </Grid> */}
     </div>

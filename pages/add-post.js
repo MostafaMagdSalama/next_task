@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -8,8 +8,19 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import axios from "axios";
 
 function AddPost() {
+  const session = useSession();
+  const router = useRouter();
+  const [imageUrl, setImageUrl] = useState("");
+  const [title, setTitle] = useState("");
+  const [desc, setDesc] = useState("");
+  const [userData, setUserData] = useState(
+    JSON.parse(localStorage.getItem("data"))
+  );
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log(event.target.elements);
@@ -31,10 +42,25 @@ function AddPost() {
     ).then((res) => res.json());
     console.log(data.secure_url);
     const postData = {
-      username: JSON.parse(localstorage.getItem("data")).username,
+      username: JSON.parse(localStorage.getItem("data")).username,
     };
-    axios.post("/api/posts/add", {});
+    axios
+      .post("/api/posts/add", {
+        userEmail: userData.user.email,
+        userName: userData.user.name,
+        imageUrl: data.secure_url,
+        title,
+        desc,
+      })
+      .then((postRes) => {
+        console.log(postRes);
+      });
   };
+  if (typeof window !== "undefined") {
+    if (!localStorage.getItem("data")) {
+      router.push("/login");
+    }
+  }
   return (
     <Container>
       <Box sx={{ width: "50%", margin: "50px auto" }}>
@@ -48,12 +74,14 @@ function AddPost() {
               Add Post
             </Typography>
             <Typography>Choose An Image</Typography>
-            <Input type="file" name="image"></Input>
+            <Input type="file" name="file"></Input>
             <Typography>Add Title</Typography>
 
             <TextField
               id="outlined-multiline-static"
               label="Write Your Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               multiline
               rows={1}
               placeholder="Write yuor comment...."
@@ -67,6 +95,8 @@ function AddPost() {
               label="Write Your Description"
               multiline
               rows={3}
+              value={desc}
+              onChange={(e) => setDesc(e.target.value)}
               placeholder="Write yuor comment...."
               sx={{ marginTop: "20px" }}
             />

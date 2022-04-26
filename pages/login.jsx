@@ -25,23 +25,32 @@ const MyComponent = {
 function Login() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const [valid, setValid] = useState(true);
   const session = useSession();
   const router = useRouter();
   const fetchData = () => {
-    axios.post("/api/users/login", { email, password }).then(({ data }) => {
-      localStorage.setItem(
-        "data",
-        JSON.stringify({ user: { name: data.name, email: data.email } })
-      );
-      router.replace("/");
-    });
+    axios
+      .post("/api/users/login", { email, password })
+      .then(({ data }) => {
+        localStorage.setItem(
+          "data",
+          JSON.stringify({ user: { name: data.name, email: data.email } })
+        );
+        router.push("/");
+      })
+      .catch((err) => {
+        setValid(false);
+      });
   };
 
   if (typeof window !== "undefined") {
     if (session.data) {
       localStorage.setItem(
         "data",
-        JSON.stringify({ name: data?.user.name, email: data.user?.email })
+        JSON.stringify({
+          name: session.data?.user.name,
+          email: session.data.user?.email,
+        })
       );
     }
     if (localStorage.getItem("data")) {
@@ -82,7 +91,10 @@ function Login() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <Button variant="contained" onClick={() => fetchData()}>
+      <Typography color="error">
+        {!valid && "email or password not correct"}
+      </Typography>
+      <Button variant="contained" onClick={fetchData}>
         Login
       </Button>
 

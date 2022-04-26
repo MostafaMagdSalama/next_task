@@ -4,11 +4,11 @@ const Post = new Schema(
   {
     userEmail: {
       require: true,
-      type: String
+      type: String,
     },
     userName: {
       require: true,
-      type: String
+      type: String,
     },
     imageUrl: {
       type: String,
@@ -23,4 +23,5 @@ const Post = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Post") || mongoose.model("Post", Post);
+// module.exports = mongoose.model("Post") || mongoose.model("Post", Post);
+module.exports = mongoose.models.Post || mongoose.model("Post", Post);

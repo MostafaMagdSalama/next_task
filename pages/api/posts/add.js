@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 //connect DB
-require("./config/connectDB");
+require("../config/connectDB");
 const PostModel = require("../models/posts");
 export default function handler(req, res) {
   if (req.method === "POST") {
