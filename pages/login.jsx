@@ -34,7 +34,7 @@ function Login() {
       .then(({ data }) => {
         localStorage.setItem(
           "data",
-          JSON.stringify({ user: { name: data.name, email: data.email } })
+          JSON.stringify({ name: data.name, email: data.email })
         );
         router.push("/");
       })

@@ -46,8 +46,8 @@ function AddPost() {
     };
     axios
       .post("/api/posts/add", {
-        userEmail: userData.user.email,
-        userName: userData.user.name,
+        userEmail: userData.email,
+        userName: userData.name,
         imageUrl: data.secure_url,
         title,
         desc,
